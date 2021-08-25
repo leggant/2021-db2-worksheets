@@ -19,23 +19,39 @@ You've started a new book‐rating website. You've been collecting data on revie
 **Create SQL statements to achieve the following:**
 *Use the techniques taught in class - zero marks for using a NATURAL JOIN or USING instead of ON*
 
-### Queries 
+### Queries
 
 1. Find the titles and the genre of all books written by Harper Lee.
 ```sql
-
+SELECT title, genre
+FROM Book
+WHERE author like "harper lee";
 ```
 2. Find all years that have a book that received a rating of 4 or 5, and sort them in increasing order.
 ```sql
-
+SELECT ratingDate
+FROM Rating
+WHERE ratings BETWEEN 4 and 5
+and ratingDate IS NOT NULL
+ORDER BY ratingDate;
 ```
 3. Find the names of all reviewers who rated To Kill a Mocking Bird.
 ```sql
-
+SELECT DISTINCT rev.name
+FROM Reviewer rev
+JOIN Rating ra
+on rev.rID = ra.rID
+Join Book bk
+on ra.bID = bk.bID
+where bk.title like "To Kill a Mocking Bird";
 ```
 4. Some reviewers didn't provide a date with their rating. Find the names of all reviewers who have ratings with a NULL value for the date
 ```sql
-
+SELECT DISTINCT rev.name
+FROM Reviewer rev
+JOIN Rating ra
+on rev.rID = ra.rID
+where ra.ratingDate is NULL;
 ```
 5. for any rating where the reviewer is the same as the author of any book, return the reviewer name, book, title, and the ratings
 ```sql
