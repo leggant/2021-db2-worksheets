@@ -29,10 +29,12 @@ WHERE author like "harper lee";
 ```
 2. Find all years that have a book that received a rating of 4 or 5, and sort them in increasing order.
 ```sql
-SELECT ratingDate
-FROM Rating
-WHERE ratings BETWEEN 4 and 5
-and ratingDate IS NOT NULL
+SELECT DISTINCT bk.published
+FROM Rating ra
+JOIN Book bk
+ON ra.bID = bk.bID
+WHERE ra.ratings BETWEEN 4 and 5
+and ra.ratingDate IS NOT NULL
 ORDER BY ratingDate;
 ```
 3. Find the names of all reviewers who rated To Kill a Mocking Bird.
@@ -53,13 +55,39 @@ JOIN Rating ra
 on rev.rID = ra.rID
 where ra.ratingDate is NULL;
 ```
-5. for any rating where the reviewer is the same as the author of any book, return the reviewer name, book, title, and the ratings
+5. For any rating where the reviewer is the same as the author of any book, return the reviewer name, book, title, and the ratings
 ```sql
-
+SELECT rev.name, bk.title, ra.ratings
+FROM Reviewer rev
+JOIN Rating ra
+on rev.rID = ra.rID
+Join Book bk
+on ra.bID = bk.bID
+where bk.author = rev.name;
 ```
-6. rite a query to return the rating data in a more readable format (usings titles): reviewer name, book title, ratings, and ratingDate. Also, sort the data, first by reviewer name, then by book title, and lastly by ratings.
+6. Write a query to return the rating data in a more readable format (usings titles): reviewer name, book title, ratings, and ratingDate. Also, sort the data, first by reviewer name, then by book title, and lastly by ratings.
 ```sql
+SELECT 
+'Reviewer, ' || re.name || ' reviewed ' || bk.title || ' on ' || ra.ratingDate || ' giving it a rating of ' || ra.ratings || ' out of 5.' 'Book Reviews'
+FROM Rating ra
+JOIN Book bk
+ON ra.bID = bk.bID
+JOIN Reviewer re
+ON ra.rID = re.rID
+ORDER BY re.name, bk.title, ra.ratings, ra.ratingDate;
 
+
+SELECT 
+re.name 'Reviewer Name', 
+bk.title 'Book Title', 
+'Rating: ' || ra.ratings 'Reviewer Rating', 
+'Reviewed: ' || ra.ratingDate 'Review Date'
+FROM Rating ra
+JOIN Book bk
+ON ra.bID = bk.bID
+JOIN Reviewer re
+ON ra.rID = re.rID
+ORDER BY re.name, bk.title, ra.ratings, ra.ratingDate;
 ```
 7. For all cases where the same reviewer rated the same book twice and gave it a higher rating the second time, return the reviewer's name and the title of the book.
 ```sql
