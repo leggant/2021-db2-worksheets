@@ -76,7 +76,6 @@ JOIN Reviewer re
 ON ra.rID = re.rID
 ORDER BY re.name, bk.title, ra.ratings, ra.ratingDate;
 
-
 SELECT 
 re.name 'Reviewer Name', 
 bk.title 'Book Title', 
@@ -91,7 +90,12 @@ ORDER BY re.name, bk.title, ra.ratings, ra.ratingDate;
 ```
 7. For all cases where the same reviewer rated the same book twice and gave it a higher rating the second time, return the reviewer's name and the title of the book.
 ```sql
-
+SELECT rev.name, bk.title
+FROM Rating AS r1 
+JOIN Rating r2 on r1.rID = r2.rID and r1.bID = r2.bID
+JOIN Reviewer rev on r1.rID = rev.rid 
+JOIN Book bk on r1.bID = bk.bID
+WHERE r1.ratingDate < r2.ratingDate AND r1.ratings < r2.ratings;
 ```
 8. For each book that has at least one rating, find the highest rating that book received. Return the book title and the rating. Sort by book title.
 ```sql
@@ -123,3 +127,4 @@ ORDER BY re.name, bk.title, ra.ratings, ra.ratingDate;
 ```sql
 
 ```
+
