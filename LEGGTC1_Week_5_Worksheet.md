@@ -99,11 +99,30 @@ WHERE r1.ratingDate < r2.ratingDate AND r1.ratings < r2.ratings;
 ```
 8. For each book that has at least one rating, find the highest rating that book received. Return the book title and the rating. Sort by book title.
 ```sql
-
+SELECT 
+    bk.title as "Book Title",
+	MAX(ra.ratings) as "Max Rating"
+FROM
+    Book AS bk
+JOIN Rating ra on bk.bID = ra.bID
+WHERE ra.ratingDate IS NOT NULL
+GROUP BY bk.title
+HAVING 
+    ra.ratings > 1
+ORDER BY bk.title;
 ```
 9. For each book, return the title and the 'rating spread', that is, the difference between highest and lowest ratings given to that book. Sort by rating spread from highest to lowest, then by book title.
 ```sql
-
+SELECT 
+    bk.title as "Book Title",
+	MAX(ra.ratings) - MIN(ra.ratings) as "Rating Spread"
+FROM
+    Book AS bk
+JOIN Rating ra on bk.bID = ra.bID
+GROUP BY bk.title
+HAVING 
+    ra.ratings
+ORDER BY "Rating Spread" DESC, bk.title;
 ```
 10. Find the difference between the average rating of books released before 1970 and the average rating of books released after 1970. (Make sure to calculate the average rating for each book, then the average of those averages for books before 1970 and books after. Don't just calculate the overall average rating before and after 1970.)
 ```sql
@@ -113,11 +132,14 @@ WHERE r1.ratingDate < r2.ratingDate AND r1.ratings < r2.ratings;
 
 11. Add the reviewer John Green to your database, with an rID of 209.
 ```sql
-
+INSERT INTO Reviewer (rID, name) VALUES (209, "John Green");
 ```
 12. Insert 5‐star ratings by Daniel Lewis for all books in the database. Leave the review date as NULL. Do Not write five insert statements.
 ```sql
-
+INSERT INTO Rating (rID, bID, ratings, ratingDate)
+SELECT Reviewer.rID, Book.bID, 5, Null from Book
+JOIN Rating on Book.bID <= Rating.bID
+JOIN Reviewer on Rating.rID=Reviewer.rID WHERE name = "Daniel Lewis";
 ```
 13. For all books that have an average rating of 4 or higher, add 25 to the published year. (Update the existing Rows; don't insert new Rows.)
 ```sql
