@@ -143,7 +143,15 @@ JOIN Reviewer on Rating.rID=Reviewer.rID WHERE name = "Daniel Lewis";
 ```
 13. For all books that have an average rating of 4 or higher, add 25 to the published year. (Update the existing Rows; don't insert new Rows.)
 ```sql
-
+UPDATE Book
+SET published = published + 25
+WHERE (
+SELECT
+    AVG(ra.ratings) avgRating
+FROM Book bk
+JOIN Rating ra on bk.bID = ra.bID
+GROUP BY bk.title
+);
 ```
 14. Remove all ratings where the book year is before 1970 or after 2000, and the rating is fewer than 4.
 ```sql
