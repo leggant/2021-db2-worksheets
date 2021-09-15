@@ -126,11 +126,17 @@ ORDER BY "Rating Spread" DESC, bk.title;
 ```
 10. Find the difference between the average rating of books released before 1970 and the average rating of books released after 1970. (Make sure to calculate the average rating for each book, then the average of those averages for books before 1970 and books after. Don't just calculate the overall average rating before and after 1970.)
 ```sql
-select AVG(ave1.ratings) as AV1
+SELECT AVG(AV1) - AVG(AV2)
+from (select AVG(ratings) as AV1
 from Rating
 Join Book on Rating.bID = Book.bID
 where published < '1970'
-
+group by Book.bID),
+(select AVG(ratings) as AV2
+from Rating
+Join Book on Rating.bID = Book.bID
+where published > '1970'
+group by Book.bID);
 ```
 ## Modification 
 
@@ -140,10 +146,9 @@ INSERT INTO Reviewer (rID, name) VALUES (209, "John Green");
 ```
 12. Insert 5‐star ratings by Daniel Lewis for all books in the database. Leave the review date as NULL. Do Not write five insert statements.
 ```sql
-INSERT INTO Rating (rID, bID, ratings, ratingDate)
-SELECT Reviewer.rID, Book.bID, 5, Null from Book
-JOIN Rating on Book.bID <= Rating.bID
-JOIN Reviewer on Rating.rID=Reviewer.rID WHERE name = "Daniel Lewis";
+INSERT INTO Rating (rID, bID, ratings)
+SELECT (SELECT rID from Reviewer where name = "Daniel Lewis"),
+bID, "5" from Book;
 ```
 13. For all books that have an average rating of 4 or higher, add 25 to the published year. (Update the existing Rows; don't insert new Rows.)
 ```sql
