@@ -154,13 +154,10 @@ bID, "5" from Book;
 ```sql
 UPDATE Book
 SET published = published + 25
-WHERE (
-SELECT
-    AVG(ra.ratings) avgRating
-FROM Book bk
+WHERE Book.bID in
+(Select Book.bID from (SELECT bk.bID, AVG(ra.ratings) avgRating FROM Book bk
 JOIN Rating ra on bk.bID = ra.bID
-GROUP BY bk.title
-);
+GROUP BY bk.title) Where avgRating >= 4);
 ```
 14. Remove all ratings where the book year is before 1970 or after 2000, and the rating is fewer than 4.
 ```sql
