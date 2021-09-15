@@ -126,6 +126,10 @@ ORDER BY "Rating Spread" DESC, bk.title;
 ```
 10. Find the difference between the average rating of books released before 1970 and the average rating of books released after 1970. (Make sure to calculate the average rating for each book, then the average of those averages for books before 1970 and books after. Don't just calculate the overall average rating before and after 1970.)
 ```sql
+select AVG(ave1.ratings) as AV1
+from Rating
+Join Book on Rating.bID = Book.bID
+where published < '1970'
 
 ```
 ## Modification 
