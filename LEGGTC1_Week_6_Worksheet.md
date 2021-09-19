@@ -8,19 +8,33 @@ You don’t have modification rights to sakila (or shouldn’t! Please tell me i
 
 1. Which staff member does not have a picture? (answer: Jon Stephens)
 ```sql
-
+SELECT concat(first_name, ' ', last_name) 
+AS image_is_null 
+FROM staff 
+WHERE picture IS NULL;
 ```
 2. Which customers paid for something that was not a video rental?
+![image-20210919220528636](Week%206/image-20210919220528636.png)
 ```sql
-
+SELECT first_name, last_name
+FROM customer c
+JOIN payment p ON c.customer_id = p.customer_id
+WHERE p.rental_id IS NULL;
 ```
 3. Which cities do not appear in the address table? There are six. Create two queries to provide this answer: 
    - Use a subselect
    - Use a left join.
+   ![image-20210919222450541](Week%206/image-20210919222450541.png)
 ```sql
+# Sub-select
 
+# Left Join
+SELECT c.city
+from city as c
+LEFT JOIN address a on c.city_id = a.city_id
+where a.city_id IS NULL; 
 ```
-## SQLite 
+## SQLite
 
 Using the pizza database from Week 4. With all modifications you should check the records affected  with a select statement before performing the modification. 
 
