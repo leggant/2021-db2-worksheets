@@ -27,12 +27,18 @@ WHERE p.rental_id IS NULL;
    ![image-20210919222450541](Week%206/image-20210919222450541.png)
 ```sql
 # Sub-select
+SELECT c.city
+FROM city c
+WHERE c.city_id NOT IN (
+	SELECT a.city_id
+    FROM address a
+);
 
 # Left Join
 SELECT c.city
-from city as c
-LEFT JOIN address a on c.city_id = a.city_id
-where a.city_id IS NULL; 
+FROM city AS c
+LEFT JOIN address a ON c.city_id = a.city_id
+WHERE a.city_id IS NULL; 
 ```
 ## SQLite
 
@@ -42,17 +48,24 @@ Using the pizza database from Week 4. With all modifications you should check th
 
 1. Insert a new customer Alice who is 23 years old
 ```sql
-
+INSERT INTO Person (name, age, gender)
+VALUES ('Alice', 23, 'female');
 ```
 
 2. Alice likes the same pizza’s as Amy. Insert records into Eats based on Amy’s food choice
 ```sql
-
+INSERT INTO Eats
+SELECT 'Alice', pizza 
+FROM Eats
+WHERE name = 'Amy';
 ```
 
 3. Alice goes to all pizzerias which serves mushroom pizza’s – insert these records into Frequents
 ```sql
-
+INSERT INTO Frequents
+SELECT 'Alice', pizzeria 
+FROM Serves
+WHERE pizza = 'mushroom';
 ```
 ### Update
 
