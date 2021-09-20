@@ -162,10 +162,10 @@ GROUP BY bk.title) Where avgRating >= 4);
 ```
 14. Remove all ratings where the book year is before 1970 or after 2000, and the rating is fewer than 4.
 ```sql
-DELETE from Rating
-WHERE rating.bID IN
-(SELECT bID FROM book bk 
+DELETE from Rating ra
+WHERE ra.bID IN
+(SELECT bk.bID FROM book bk 
 WHERE (bk.published < 1970 OR bk.published > 2000)) 
-AND ratings < 4;
+AND ra.ratings < 4;
 ```
 
