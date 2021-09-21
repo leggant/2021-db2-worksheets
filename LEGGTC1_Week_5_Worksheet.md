@@ -68,7 +68,10 @@ where bk.author = rev.name;
 6. Write a query to return the rating data in a more readable format (usings titles): reviewer name, book title, ratings, and ratingDate. Also, sort the data, first by reviewer name, then by book title, and lastly by ratings.
 ```sql
 SELECT 
-'Reviewer, ' || re.name || ' reviewed ' || bk.title || ' on ' || ra.ratingDate || ' giving it a rating of ' || ra.ratings || ' out of 5.' 'Book Reviews'
+'Reviewer: ' || re.name 'Reviewer',
+'Book Title: ' || bk.title 'Book Reviewed',
+'Reviewed On: ' || ra.ratingDate 'Review Date', 
+'Rating: ' || ra.ratings || ' out of 5.' 'Review'
 FROM Rating ra
 JOIN Book bk
 ON ra.bID = bk.bID
