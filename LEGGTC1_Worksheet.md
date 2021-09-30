@@ -25,7 +25,7 @@ You've started a new book‐rating website. You've been collecting data on revie
 ```sql
 SELECT title, genre
 FROM Book
-WHERE author like "harper lee";
+WHERE author LIKE "harper lee";
 ```
 2. Find all years that have a book that received a rating of 4 or 5, and sort them in increasing order.
 ```sql
@@ -33,8 +33,8 @@ SELECT DISTINCT bk.published
 FROM Rating ra
 JOIN Book bk
 ON ra.bID = bk.bID
-WHERE ra.ratings BETWEEN 4 and 5
-and ra.ratingDate IS NOT NULL
+WHERE ra.ratings BETWEEN 4 AND 5
+AND ra.ratingDate IS NOT NULL
 ORDER BY ratingDate;
 ```
 3. Find the names of all reviewers who rated To Kill a Mocking Bird.
@@ -42,27 +42,27 @@ ORDER BY ratingDate;
 SELECT DISTINCT rev.name
 FROM Reviewer rev
 JOIN Rating ra
-on rev.rID = ra.rID
+ON rev.rID = ra.rID
 Join Book bk
-on ra.bID = bk.bID
-where bk.title like "To Kill a Mocking Bird";
+ON ra.bID = bk.bID
+WHERE bk.title LIKE "To Kill a Mocking Bird";
 ```
 4. Some reviewers didn't provide a date with their rating. Find the names of all reviewers who have ratings with a NULL value for the date
 ```sql
 SELECT DISTINCT rev.name
 FROM Reviewer rev
 JOIN Rating ra
-on rev.rID = ra.rID
-where ra.ratingDate is NULL;
+ON rev.rID = ra.rID
+WHERE ra.ratingDate IS NULL;
 ```
 5. For any rating where the reviewer is the same as the author of any book, return the reviewer name, book, title, and the ratings
 ```sql
 SELECT rev.name, bk.title, ra.ratings
 FROM Reviewer rev
 JOIN Rating ra
-on rev.rID = ra.rID
+ON rev.rID = ra.rID
 Join Book bk
-on ra.bID = bk.bID
+ON ra.bID = bk.bID
 where bk.author = rev.name;
 ```
 6. Write a query to return the rating data in a more readable format (usings titles): reviewer name, book title, ratings, and ratingDate. Also, sort the data, first by reviewer name, then by book title, and lastly by ratings.
@@ -95,19 +95,19 @@ ORDER BY re.name, bk.title, ra.ratings, ra.ratingDate;
 ```sql
 SELECT rev.name, bk.title
 FROM Rating AS r1 
-JOIN Rating r2 on r1.rID = r2.rID and r1.bID = r2.bID
-JOIN Reviewer rev on r1.rID = rev.rid 
-JOIN Book bk on r1.bID = bk.bID
+JOIN Rating r2 ON r1.rID = r2.rID AND r1.bID = r2.bID
+JOIN Reviewer rev ON r1.rID = rev.rid 
+JOIN Book bk ON r1.bID = bk.bID
 WHERE r1.ratingDate < r2.ratingDate AND r1.ratings < r2.ratings;
 ```
 8. For each book that has at least one rating, find the highest rating that book received. Return the book title and the rating. Sort by book title.
 ```sql
 SELECT 
-    bk.title as "Book Title",
-	MAX(ra.ratings) as "Max Rating"
+    bk.title AS "Book Title",
+	MAX(ra.ratings) AS "Max Rating"
 FROM
     Book AS bk
-JOIN Rating ra on bk.bID = ra.bID
+JOIN Rating ra ON bk.bID = ra.bID
 WHERE ra.ratingDate IS NOT NULL
 GROUP BY bk.title
 HAVING 
@@ -117,11 +117,11 @@ ORDER BY bk.title;
 9. For each book, return the title and the 'rating spread', that is, the difference between highest and lowest ratings given to that book. Sort by rating spread from highest to lowest, then by book title.
 ```sql
 SELECT 
-    bk.title as "Book Title",
-	MAX(ra.ratings) - MIN(ra.ratings) as "Rating Spread"
+    bk.title AS "Book Title",
+	MAX(ra.ratings) - MIN(ra.ratings) AS "Rating Spread"
 FROM
     Book AS bk
-JOIN Rating ra on bk.bID = ra.bID
+JOIN Rating ra ON bk.bID = ra.bID
 GROUP BY bk.title
 HAVING 
     ra.ratings
@@ -130,16 +130,16 @@ ORDER BY "Rating Spread" DESC, bk.title;
 10. Find the difference between the average rating of books released before 1970 and the average rating of books released after 1970. (Make sure to calculate the average rating for each book, then the average of those averages for books before 1970 and books after. Don't just calculate the overall average rating before and after 1970.)
 ```sql
 SELECT AVG(AV1) - AVG(AV2) average_rating_diff
-from (select AVG(ratings) as AV1
-from Rating
-Join Book on Rating.bID = Book.bID
-where published < '1970'
-group by Book.bID),
-(select AVG(ratings) as AV2
-from Rating
-Join Book on Rating.bID = Book.bID
-where published > '1970'
-group by Book.bID);
+FROM (select AVG(ratings) AS AV1
+FROM Rating
+JOIN Book ON Rating.bID = Book.bID
+WHERE published < '1970'
+GROUP BY Book.bID),
+(select AVG(ratings) AS AV2
+FROM Rating
+JOIN Book ON Rating.bID = Book.bID
+WHERE published > '1970'
+GROUP BY Book.bID);
 ```
 ## Modification 
 
@@ -150,22 +150,22 @@ INSERT INTO Reviewer (rID, name) VALUES (209, "John Green");
 12. Insert 5‐star ratings by Daniel Lewis for all books in the database. Leave the review date as NULL. Do Not write five insert statements.
 ```sql
 INSERT INTO Rating (rID, bID, ratings)
-SELECT (SELECT rID from Reviewer 
-        where name = "Daniel Lewis"),
-bID, "5" from Book;
+SELECT (SELECT rID FROM Reviewer 
+        WHERE name = "Daniel Lewis"),
+bID, "5" FROM Book;
 ```
 13. For all books that have an average rating of 4 or higher, add 25 to the published year. (Update the existing Rows; don't insert new Rows.)
 ```sql
 UPDATE Book
 SET published = published + 25
-WHERE Book.bID in
-(Select Book.bID from (SELECT bk.bID, AVG(ra.ratings) avgRating FROM Book bk
-JOIN Rating ra on bk.bID = ra.bID
+WHERE Book.bID IN
+(Select Book.bID FROM (SELECT bk.bID, AVG(ra.ratings) avgRating FROM Book bk
+JOIN Rating ra ON bk.bID = ra.bID
 GROUP BY bk.title) Where avgRating >= 4);
 ```
 14. Remove all ratings where the book year is before 1970 or after 2000, and the rating is fewer than 4.
 ```sql
-DELETE from Rating
+DELETE FROM Rating
 WHERE Rating.bID IN
 (SELECT bID FROM book bk 
 WHERE (bk.published < 1970 OR bk.published > 2000)) 
